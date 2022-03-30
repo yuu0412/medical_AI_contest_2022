@@ -1,0 +1,11 @@
+hydra:
+  run:
+    dir: data/output/logs/ssl/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+backbone:
+  name: resnet18d
+
+ssl:
+  name: "SimCLR"
+
+epochs: 300

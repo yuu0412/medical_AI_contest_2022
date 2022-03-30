@@ -1,0 +1,85 @@
+hydra:
+  run:
+    dir: data/output/logs/train/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+DEBUG: False
+
+model:
+  model_name: 'resnet18d'
+
+scheduler:
+  scheduler_to_use: "CosineAnnealingLR"
+  ExponentialLR:
+    name: "ExponentialLR"
+    params:
+      gamma: 0.95
+  StepLR:
+    name: "StepLR"
+    params:
+      step_size: 20 
+      gamma: 0.5
+  CosineAnnealingLR:
+    name: "CosineAnnealingLR"
+    params:
+      T_max: 20
+      eta_min: 1e-6
+
+criterion:
+  name: "BCEWithLogitsLoss"
+
+optimizer:
+  name: "AdamW"
+  lr: 1e-3
+  weight_decay: 1e-4
+
+transforms:
+  ToTensor:
+    use: True
+  Normalize:
+    use: False
+    params:
+      mean: [0.4832, 0.4832, 0.4832]
+      std: [0.2424, 0.2424, 0.2424]
+  RandomHorizontalFlip:
+    use: True
+    params:
+      p: 0.5
+  RandomVerticalFlip:
+    use: False
+    params:
+      p: 0.5
+  RandomRotation:
+    use: True
+    params:
+      degrees: 10
+  RandomResizedCrop:
+    use: True
+    params:
+      size: 150
+  RandomCrop:
+    use: False
+    params:
+      size: 150
+
+early_stopping:
+  patience: 10
+
+train_loader:
+  batch_size: 32
+
+val_loader:
+  batch_size: 32
+
+max_epochs: 20
+
+self_training:
+  model_name: 'resnet18d'
+  weight_path: '2022-03-20/23-45-31/best_param_of_cv_1.pt'
+
+seed: 42
+
+all_train: False
+
+ssl:
+  use: True
+  path: "2022-03-30/21-50-58/SimCLR_resnet18d_250.pt"

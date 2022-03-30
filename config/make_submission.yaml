@@ -1,0 +1,56 @@
+hydra:
+  run:
+    dir: data/output/logs/predict/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+DEBUG: False
+
+transforms:
+  ToTensor:
+    use: True
+  Normalize:
+    use: False
+    params:
+      mean: [0.4832, 0.4832, 0.4832]
+      std: [0.2424, 0.2424, 0.2424]
+  RandomHorizontalFlip:
+    use: True
+    params:
+      p: 0.5
+  RandomVerticalFlip:
+    use: False
+    params:
+      p: 0.5
+  RandomRotation:
+    use: True
+    params:
+      degrees: 10
+  RandomResizedCrop:
+    use: True
+    params:
+      size: 150
+  RandomCrop:
+    use: False
+    params:
+      size: 150
+
+test_loader:
+  batch_size: 32
+
+make_submission:
+  model_name: "resnet18d"
+  weight_paths: ["2022-03-30/15-37-39/best_param_of_cv_0.pt", "2022-03-30/15-37-39/best_param_of_cv_1.pt", "2022-03-30/15-37-39/best_param_of_cv_2.pt", "2022-03-30/15-37-39/best_param_of_cv_3.pt", "2022-03-30/15-37-39/best_param_of_cv_4.pt"]
+
+tta:
+  use: True
+  transforms:
+    HorizontalFlip:
+      use: True
+    FiveCrops:
+      use: True
+      params:
+        crop_height: 150
+        crop_width: 150
+
+seed: 42
+
+all_train: False
